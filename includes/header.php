@@ -70,7 +70,6 @@ $navFlat = [
         <a href="<?= e(tel_href(setting('phone'))) ?>"><?= e(setting('phone')) ?></a>
         <a href="mailto:<?= e(setting('email')) ?>"><?= e(setting('email')) ?></a>
       </div>
-      <a class="portal-link" href="<?= e(BASE_URL) ?>admin/login.php">Portal Login</a>
     </div>
   </div>
 
@@ -107,7 +106,6 @@ $navFlat = [
         <?php endforeach; ?>
         <div class="nav-cta">
           <a class="btn btn-gold btn-sm" href="<?= e(BASE_URL) ?>apply.php">Apply Now</a>
-          <a class="btn btn-ghost btn-sm" href="<?= e(BASE_URL) ?>admin/login.php">Portal Login</a>
         </div>
       </nav>
 

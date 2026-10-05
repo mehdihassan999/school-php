@@ -278,8 +278,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 --     UPDATE admins SET password_hash='<new hash>' WHERE id=1;
 -- ============================================================================
 INSERT INTO admins (username, email, password_hash, name, role) VALUES
-('admin', 'm.qazim1997@gamil.com',
- '$2y$10$13S2/5YyN1UjuxzkBFXL3.mM1B3mYWGcSMr3eTJd2ydywdATNKtgu',
+('admin', 'm.qazim1997@gmail.com',
+ '$2y$10$onrtdecLPWC4j2shsFpKw.W5M4FKiPIrcFLMKNSILmwGv7S0Mcb26',
  'School Administrator', 'admin');
 
 -- ============================================================================

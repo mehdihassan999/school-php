@@ -78,12 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (!$err) {
+                $uploadedKeys = [];
                 // Handle image uploads first so a bad file aborts before saving.
                 foreach (['logo', 'favicon', 'hero_image', 'about_image', 'principal_photo', 'og_image'] as $img) {
                     try {
                         $saved = save_upload('file_' . $img, 'image');
                         if ($saved !== null) {
                             save_setting($img, $saved);
+                            $uploadedKeys[$img] = true;
                         }
                     } catch (RuntimeException $ex) {
                         $err = $ex->getMessage();
@@ -95,6 +97,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$err) {
                 foreach ($fields as $key) {
                     save_setting($key, post($key, 8000));
+                }
+                foreach (['logo', 'favicon', 'hero_image', 'about_image', 'principal_photo', 'og_image'] as $img) {
+                    if (!isset($uploadedKeys[$img]) && isset($_POST[$img])) {
+                        save_setting($img, post($img, 2000));
+                    }
                 }
                 flash('ok', 'Settings saved — the website has been updated.');
                 redirect(BASE_URL . 'admin/settings.php?tab=' . $tab);
@@ -109,22 +116,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 /** A setting field, with an optional image upload alongside. */
 function setting_field(string $key, string $label, string $type = 'text', ?string $hint = null, bool $withImage = false): void
 {
-    $val = in_array($key, ['logo', 'favicon', 'hero_image', 'about_image', 'principal_photo', 'og_image'], true)
+    $rawVal = setting($key);
+    $val    = in_array($key, ['logo', 'favicon', 'hero_image', 'about_image', 'principal_photo', 'og_image'], true)
         ? setting_asset($key)
         : setting($key);
+
     echo '<div class="field" style="grid-column:1/-1">';
     echo '<label for="s_' . e($key) . '">' . e($label) . '</label>';
 
     if ($withImage) {
-        echo '<div class="img-preview">';
-        echo $val ? '<img src="' . e($val) . '" alt="" style="width:96px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--line)">' : '';
-        echo '<div style="flex:1;min-width:240px">';
-        echo '<input type="hidden" name="' . e($key) . '" value="' . e($val) . '">';
+        echo '<div class="img-preview" style="display:flex;gap:14px;align-items:center;margin-top:4px">';
+        if ($val) {
+            echo '<img src="' . e($val) . '" alt="" style="width:70px;height:50px;object-fit:contain;border-radius:8px;border:1px solid var(--line);background:#fff;padding:3px;flex-shrink:0">';
+        }
+        echo '<div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:6px">';
+        echo '<input id="s_' . e($key) . '" name="' . e($key) . '" type="text" value="' . e($rawVal) . '" placeholder="Image path or URL (e.g. assets/images/logo.png)">';
         echo '<input type="file" name="file_' . e($key) . '" accept=".jpg,.jpeg,.png,.webp,.gif,.avif">';
-        echo '<span class="hint">JPG, PNG, WEBP or GIF — max 4 MB. Leave blank to keep the current image.</span>';
+        echo '<span class="hint">Upload a file (max 4 MB) or enter an image URL/path above.</span>';
         echo '</div></div>';
         if ($hint) {
-            echo '<span class="hint">' . e($hint) . '</span>';
+            echo '<span class="hint" style="margin-top:4px;display:block">' . e($hint) . '</span>';
         }
         echo '</div>';
         return;
