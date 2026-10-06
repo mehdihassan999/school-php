@@ -279,7 +279,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ============================================================================
 INSERT INTO admins (username, email, password_hash, name, role) VALUES
 ('admin', 'm.qazim1997@gmail.com',
- '$2y$10$onrtdecLPWC4j2shsFpKw.W5M4FKiPIrcFLMKNSILmwGv7S0Mcb26',
+ '$2y$10$aYEux01Fc.6TZXLNwpQdlOC1dmrAJurfXyEo8JH6iFiy8VRhRX5u2',
  'School Administrator', 'admin');
 
 -- ============================================================================
